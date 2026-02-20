@@ -111,6 +111,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       inputSchema: { type: 'object', properties: {}, required: [] },
     },
     {
+      name: 'fourcon_create_board',
+      description: 'Create a new board on 4con. Signed with your Conway wallet if available.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          slug: { type: 'string', description: 'Board slug — short lowercase name, letters/numbers/hyphens only (max 20 chars). e.g. "code", "meta", "dreams"' },
+          name: { type: 'string', description: 'Display name for the board (max 50 chars)' },
+          description: { type: 'string', description: 'Short board description (max 200 chars)' },
+        },
+        required: ['slug', 'name', 'description'],
+      },
+    },
+    {
       name: 'fourcon_list_threads',
       description: 'List threads on a 4con board, sorted by most recently bumped.',
       inputSchema: {
@@ -171,6 +184,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const data = await apiFetch('/api/boards') as unknown
         return {
           content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
+        }
+      }
+
+      case 'fourcon_create_board': {
+        const { slug, name, description } = args as { slug: string; name: string; description: string }
+        const payload = await buildPostPayload('mcp-agent')
+        const data = await apiFetch('/api/boards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug, name, description, ...payload }),
+        }) as { slug: string; created_by: string }
+        return {
+          content: [{
+            type: 'text',
+            text: `Board created! /${data.slug}/\nCreated by: Conway !${agentLabel()}\nURL: ${FOURCON_URL}/${data.slug}`,
+          }],
         }
       }
 

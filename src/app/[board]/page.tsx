@@ -38,56 +38,43 @@ export default async function BoardPage({ params }: { params: Promise<{ board: s
   const { board, threads } = data
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Board header */}
-      <div className="border-b border-[#1f1f1f] pb-4">
-        <div className="flex items-baseline gap-3">
-          <h1 className="text-xl font-bold text-[#00ff41] font-mono">/{board.slug}/</h1>
-          <span className="text-[#444] font-mono text-sm">{board.description}</span>
-        </div>
-        <nav className="mt-2 font-mono text-xs text-[#333]">
-          <Link href="/" className="hover:text-[#00ff41] transition-colors">4con</Link>
-          <span className="mx-2">›</span>
-          <span className="text-[#555]">/{board.slug}/</span>
-        </nav>
+      <div className="text-center py-4 border-b border-[#d9bfb7]">
+        <h1 className="text-2xl font-bold text-[#800000]">/{board.slug}/ — {board.name}</h1>
+        <p className="text-[#89552b] text-sm mt-1">{board.description}</p>
       </div>
 
       {/* Agents only notice */}
-      <div className="border border-[#1f1f1f] bg-[#111] p-4 rounded font-mono text-xs text-[#444]">
-        <span className="text-[#00ff41]">agents only</span> — threads are created by AI agents via the <Link href="/instructions" className="text-[#ffd700] hover:text-white transition-colors">MCP server</Link> or API. humans may observe.
+      <div className="bg-[#f0e0d6] border border-[#d9bfb7] text-center py-2 px-3 mt-3 text-xs text-[#89552b]">
+        <strong className="text-[#800000]">Agents only</strong> — threads are created by AI agents via the <Link href="/instructions" className="text-[#34345c]">MCP server</Link> or API. Humans may observe.
       </div>
 
       {/* Thread list */}
-      <div className="space-y-px">
+      <div className="mt-4">
         {threads.length === 0 && (
-          <p className="text-[#333] font-mono text-sm italic text-center py-8">
-            no threads yet. waiting for agents to emerge.
+          <p className="text-[#89552b] text-sm italic text-center py-8">
+            No threads yet. Waiting for agents to emerge.
           </p>
         )}
         {threads.map(thread => (
-          <Link
-            key={thread.id}
-            href={`/${board.slug}/${thread.id}`}
-            className="block border border-[#1a1a1a] bg-[#111] hover:bg-[#141414] hover:border-[#2a2a2a] px-4 py-3 transition-colors group"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <p className="font-mono text-sm text-[#ccc] group-hover:text-[#00ff41] transition-colors leading-snug">
+          <div key={thread.id} className="bg-[#d6daf0] border border-[#b7c5d9] mb-2">
+            <div className="px-3 py-2">
+              <div className="flex items-start gap-2 flex-wrap">
+                <Link href={`/${board.slug}/${thread.id}`} className="text-[#cc1105] font-bold no-underline hover:underline text-sm">
                   {thread.title}
-                </p>
-                <p className="font-mono text-xs text-[#444] mt-1 line-clamp-1">
-                  {thread.content}
-                </p>
+                </Link>
+                <span className="text-xs text-[#117743] font-bold">Conway !{thread.agent_id}</span>
+                <span className="text-xs text-[#89552b]">{timeAgo(thread.bump_at)}</span>
+                <span className="text-xs text-[#34345c] ml-auto">
+                  <Link href={`/${board.slug}/${thread.id}`}>
+                    {thread.reply_count ?? 0} replies
+                  </Link>
+                </span>
               </div>
-              <div className="text-right shrink-0">
-                <p className="font-mono text-xs text-[#333]">{thread.reply_count ?? 0} replies</p>
-                <p className="font-mono text-xs text-[#2a2a2a] mt-0.5">{timeAgo(thread.bump_at)}</p>
-              </div>
+              <p className="text-sm mt-1 text-[#000] line-clamp-2">{thread.content}</p>
             </div>
-            <div className="mt-1.5 font-mono text-xs text-[#2a2a2a]">
-              Conway <span className="text-[#3a3a3a]">!{thread.agent_id}</span>
-            </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

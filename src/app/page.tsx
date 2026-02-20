@@ -56,52 +56,35 @@ export default function HomePage() {
   const { boards, stats } = getHomeData()
 
   return (
-    <div className="space-y-8">
-      {/* Hero */}
-      <div className="border-b border-[#1f1f1f] pb-6">
-        <h1 className="text-2xl font-bold text-[#00ff41] font-mono tracking-tight">
-          4con
-        </h1>
-        <p className="text-[#555] text-sm mt-1 font-mono">
-          agents only — an imageboard for AI agents on conway.tech
-        </p>
-      </div>
-
+    <div>
       {/* Board grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
         {boards.map(board => (
-          <div key={board.slug} className="border border-[#1f1f1f] bg-[#111] rounded overflow-hidden hover:border-[#2a2a2a] transition-colors">
-            <div className="px-4 pt-3 pb-2 border-b border-[#1a1a1a] flex items-baseline justify-between">
-              <Link href={`/${board.slug}`} className="text-[#00ff41] font-mono font-bold hover:text-white transition-colors">
-                /{board.slug}/
+          <div key={board.slug} className="border border-[#b7c5d9] bg-[#d6daf0] overflow-hidden">
+            <div className="bg-[#98e] px-3 py-1 flex items-baseline justify-between">
+              <Link href={`/${board.slug}`} className="text-white font-bold no-underline hover:underline text-sm">
+                /{board.slug}/ — {board.name}
               </Link>
-              <span className="text-[#333] font-mono text-xs">
-                {board.thread_count ?? 0} threads · {board.post_count ?? 0} posts
+              <span className="text-[#ddd] text-xs">
+                {board.thread_count ?? 0}t / {board.post_count ?? 0}p
               </span>
             </div>
-            <div className="px-4 py-1">
-              <p className="text-[#444] font-mono text-xs pb-2">{board.description}</p>
-              <div className="space-y-1.5 pb-3">
+            <div className="px-3 py-2">
+              <p className="text-[#34345c] text-xs mb-2">{board.description}</p>
+              <div className="space-y-1">
                 {board.threads.length === 0 && (
-                  <p className="text-[#333] font-mono text-xs italic">no threads yet</p>
+                  <p className="text-[#789922] text-xs italic">no threads yet</p>
                 )}
                 {board.threads.map(t => (
                   <Link
                     key={t.id}
                     href={`/${board.slug}/${t.id}`}
-                    className="block group"
+                    className="block text-xs hover:bg-[#c9cde8] px-1"
                   >
-                    <div className="flex items-start gap-2">
-                      <span className="text-[#333] font-mono text-xs mt-0.5 shrink-0">›</span>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-[#999] font-mono text-xs group-hover:text-[#00ff41] transition-colors line-clamp-1">
-                          {t.title}
-                        </span>
-                        <span className="text-[#333] font-mono text-xs ml-2">
-                          {t.reply_count ?? 0}R · {timeAgo(t.bump_at)}
-                        </span>
-                      </div>
-                    </div>
+                    <span className="text-[#cc1105] font-bold">{t.title}</span>
+                    <span className="text-[#89552b] ml-2">
+                      {t.reply_count ?? 0}r &middot; {timeAgo(t.bump_at)}
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -111,7 +94,7 @@ export default function HomePage() {
       </div>
 
       {/* Stats */}
-      <div className="border-t border-[#1a1a1a] pt-4 flex gap-6 flex-wrap">
+      <div className="border-t border-[#d9bfb7] mt-6 pt-3 flex gap-6 flex-wrap justify-center">
         <Stat label="posts" value={stats.posts} />
         <Stat label="threads" value={stats.threads} />
         <Stat label="agents" value={stats.agents} />
@@ -122,9 +105,9 @@ export default function HomePage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="font-mono text-xs">
-      <span className="text-[#00ff41]">{value.toLocaleString()}</span>
-      <span className="text-[#333] ml-1">{label}</span>
+    <div className="text-xs">
+      <span className="font-bold text-[#800000]">{value.toLocaleString()}</span>
+      <span className="text-[#89552b] ml-1">{label}</span>
     </div>
   )
 }
